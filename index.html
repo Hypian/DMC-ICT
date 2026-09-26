@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMC Claims Assurance</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <img src="dmc-logo.png" alt="Dream Medical Center Hospital" class="brand-logo">
+      <div class="brand-divider"></div>
+      <div class="brand-text">
+        <h1>Claims Assurance</h1>
+        <p class="brand-sub">ICT Portal</p>
+      </div>
+    </div>
+    <div class="topbar-center">
+      <div class="view-switch" role="tablist">
+        <button id="btn-view-dashboard" class="switch-btn active" role="tab" aria-selected="true">
+          <i class='bx bx-grid-alt'></i>
+          Dashboard View
+        </button>
+        <button id="btn-view-widget" class="switch-btn" role="tab" aria-selected="false">
+          <i class='bx bx-receipt'></i>
+          EMR Widget View
+        </button>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <button id="btn-sync-all" class="btn-sync-hmis" title="Pull latest visits from HMIS and verify against Payers">
+        <i class='bx bx-refresh'></i> Sync HMIS & Payers
+      </button>
+      <span id="last-sync"><i class='bx bx-check-circle'></i> Loading…</span>
+    </div>
+  </header>
+
+  <main class="app">
+    <!-- Dashboard view -->
+    <div id="dashboard-view" class="view-panel">
+      <section class="stats" id="stats">
+        <!-- stat cards injected by app.js -->
+      </section>
+
+      <section class="toolbar">
+        <div class="search-wrap">
+          <i class='bx bx-search search-icon'></i>
+          <input type="text" id="search-input" placeholder="Search patient, visit ID, or payer…">
+        </div>
+        <select id="status-filter">
+          <option value="all">All statuses</option>
+          <option value="flagged">Flagged</option>
+          <option value="resolved">Resolved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <select id="payer-filter">
+          <option value="all">All payers</option>
+        </select>
+      </section>
+
+      <section class="table-wrap">
+        <table id="claims-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Visit</th>
+              <th>Payer</th>
+              <th>Issue</th>
+              <th>Owner</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="claims-tbody">
+            <!-- rows injected by app.js -->
+          </tbody>
+        </table>
+        <p class="empty-state" id="empty-state" hidden>No claims match your filters.</p>
+      </section>
+    </div>
+
+    <!-- EMR Widget view -->
+    <div id="widget-view" class="view-panel" hidden>
+      <div class="widget-stage-header">
+        <div class="stage-control-group">
+          <label for="widget-visit-select" class="stage-label">Active EMR Visit:</label>
+          <select id="widget-visit-select" class="widget-select">
+            <!-- populated by app.js -->
+          </select>
+        </div>
+
+        <div class="stage-actions">
+          <button id="btn-copy-embed" class="stage-action-btn" title="Copy iframe embed snippet">
+            <i class='bx bx-copy'></i>
+            Copy Embed Code
+          </button>
+          <button id="btn-open-standalone" class="stage-action-btn" title="Open standalone widget in new window">
+            <i class='bx bx-link-external'></i>
+            Standalone
+          </button>
+        </div>
+      </div>
+
+      <div class="widget-stage-container">
+        <!-- Live rendered DMC assurance widget card -->
+        <div id="assurance-widget-root"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Detail panel -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="detail-panel" id="detail-panel">
+    <button class="panel-close" id="panel-close" aria-label="Close"><i class='bx bx-x'></i></button>
+    <div id="panel-content"><!-- injected by app.js --></div>
+  </aside>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

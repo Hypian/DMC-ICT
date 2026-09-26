@@ -1,0 +1,50 @@
+{
+  "hmis": {
+    "fhir": {
+      "enabled": true,
+      "baseUrl": "https://emr.dmc-hospital.org/fhir/R4",
+      "authType": "Bearer",
+      "timeoutMs": 5000
+    },
+    "rest": {
+      "enabled": true,
+      "baseUrl": "https://emr.dmc-hospital.org/api/v1",
+      "authType": "Basic",
+      "timeoutMs": 5000
+    }
+  },
+  "insurance": {
+    "sha": {
+      "enabled": true,
+      "endpoint": "https://api.sha.go.ke/v2/verify",
+      "facilityCode": "DMC-HOSP-0042",
+      "currency": "KES"
+    },
+    "smartEdi": {
+      "enabled": true,
+      "endpoint": "https://edi.smartapplicationsgroup.com/claims/v1",
+      "facilityId": "DMC-091",
+      "currency": "KES"
+    }
+  },
+  "rules": {
+    "currency": "KES",
+    "preAuthRequiredProcedures": [
+      "CT scan",
+      "MRI",
+      "Endoscopy",
+      "Laparoscopy",
+      "Dialysis",
+      "ICU Admission"
+    ],
+    "highCostThreshold": 10000,
+    "tariffs": {
+      "Consultation - General": 3000,
+      "Consultation - Specialist": 4000,
+      "CT scan - abdomen": 12800,
+      "MRI - Lumbar Spine": 28000,
+      "Comprehensive Metabolic Panel": 8000,
+      "Full Hemogram": 3200
+    }
+  }
+}

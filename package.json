@@ -1,0 +1,22 @@
+{
+  "name": "dmc-claims-assurance",
+  "version": "1.0.0",
+  "description": "Dream Medical Center Hospital Claims Assurance System & EMR Widget",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "dmc",
+    "claims",
+    "assurance",
+    "hmis",
+    "fhir",
+    "emr",
+    "widget"
+  ],
+  "author": "DMC ICT Department",
+  "license": "ISC"
+}
