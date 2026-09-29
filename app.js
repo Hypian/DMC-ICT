@@ -14,7 +14,7 @@ const MOCK_CLAIMS = [
     scheme: "Outpatient · Corporate scheme B",
     payer: "Jubilee",
     severity: "low",
-    currency: "KES",
+    currency: "RWF",
     rule: "Pre-bill audit complete",
     whatsWrong: "No audit discrepancies detected.",
     whyItMatters: "Clean claims have 98.4% first-pass payment rate without queries.",
@@ -30,7 +30,7 @@ const MOCK_CLAIMS = [
     invoiceTotal: 18450,
     checklist: [
       { label: "Member eligible", value: "verified", status: "pass" },
-      { label: "Balance covers visit", value: "KES 84,000", status: "pass" },
+      { label: "Balance covers visit", value: "RWF 84,000", status: "pass" },
       { label: "CT scan – pre-auth", value: "approved", status: "pass" },
       { label: "CT added to bill", value: "+ 12,800", status: "pass" },
       { label: "Rx – no pre-auth needed", value: "added · + 2,150", status: "pass" },
@@ -47,7 +47,7 @@ const MOCK_CLAIMS = [
     scheme: "Outpatient · Jubilee Premier",
     payer: "Jubilee",
     severity: "high",
-    currency: "KES",
+    currency: "RWF",
     rule: "Missing pre-authorization",
     whatsWrong: "MRI request lacks a documented clinical rationale.",
     whyItMatters: "Jubilee requires a documented clinical indication before an MRI claim will be accepted.",
@@ -63,7 +63,7 @@ const MOCK_CLAIMS = [
     invoiceTotal: 33350,
     checklist: [
       { label: "Member eligible", value: "verified", status: "pass" },
-      { label: "Balance covers visit", value: "KES 95,000", status: "pass" },
+      { label: "Balance covers visit", value: "RWF 95,000", status: "pass" },
       { label: "MRI scan – pre-auth", value: "missing indication", status: "fail" },
       { label: "MRI added to bill", value: "+ 28,000", status: "pass" },
       { label: "Rx – no pre-auth needed", value: "added · + 1,850", status: "pass" },
@@ -80,7 +80,7 @@ const MOCK_CLAIMS = [
     scheme: "Outpatient · SHA Scheme Standard",
     payer: "SHA",
     severity: "high",
-    currency: "KES",
+    currency: "RWF",
     rule: "Insurance ID mismatch",
     whatsWrong: "Member ID on file doesn't match the format SHA expects for this scheme.",
     whyItMatters: "Claims with an invalid member ID are rejected outright, not queried — no recovery path.",
@@ -96,7 +96,7 @@ const MOCK_CLAIMS = [
     invoiceTotal: 9150,
     checklist: [
       { label: "Member eligible", value: "format mismatch", status: "fail" },
-      { label: "Balance covers visit", value: "KES 50,000", status: "pass" },
+      { label: "Balance covers visit", value: "RWF 50,000", status: "pass" },
       { label: "Lab panel – pre-auth", value: "covered tier", status: "pass" },
       { label: "Amounts within tariffs", value: "all items valid", status: "pass" },
       { label: "Claim form", value: "pending ID update", status: "warning" }
@@ -110,7 +110,7 @@ const MOCK_CLAIMS = [
     scheme: "Outpatient · Britam Care Plus",
     payer: "Britam",
     severity: "medium",
-    currency: "KES",
+    currency: "RWF",
     rule: "Diagnosis / procedure mismatch",
     whatsWrong: "Billed procedure code doesn't correspond to the recorded ICD-10 diagnosis.",
     whyItMatters: "Payer systems auto-flag coding mismatches, which usually means a full resubmission cycle.",
@@ -126,7 +126,7 @@ const MOCK_CLAIMS = [
     invoiceTotal: 12100,
     checklist: [
       { label: "Member eligible", value: "verified", status: "pass" },
-      { label: "Balance covers visit", value: "KES 60,000", status: "pass" },
+      { label: "Balance covers visit", value: "RWF 60,000", status: "pass" },
       { label: "ICD-10 coding", value: "re-aligned M25.5", status: "pass" },
       { label: "Tariff compliance", value: "all items valid", status: "pass" },
       { label: "Claim form", value: "complete & valid", status: "pass" }
@@ -141,9 +141,9 @@ const MOCK_CLAIMS = [
     scheme: "Outpatient · AAR Executive Tier",
     payer: "AAR",
     severity: "low",
-    currency: "KES",
+    currency: "RWF",
     rule: "Member share not collected",
-    whatsWrong: "Co-pay of KES 1,000 was not collected at the point of service.",
+    whatsWrong: "Co-pay of RWF 1,000 was not collected at the point of service.",
     whyItMatters: "Uncollected member shares become write-offs once the visit closes.",
     whatToDo: "Route to credit control for follow-up before month-end reconciliation.",
     owner: "Credit Control",
@@ -157,8 +157,8 @@ const MOCK_CLAIMS = [
     invoiceTotal: 6700,
     checklist: [
       { label: "Member eligible", value: "verified", status: "pass" },
-      { label: "Balance covers visit", value: "KES 72,000", status: "pass" },
-      { label: "Co-pay collection", value: "pending KES 1,000", status: "fail" },
+      { label: "Balance covers visit", value: "RWF 72,000", status: "pass" },
+      { label: "Co-pay collection", value: "pending RWF 1,000", status: "fail" },
       { label: "Tariff compliance", value: "all items valid", status: "pass" },
       { label: "Claim form", value: "held for receipt", status: "warning" }
     ],
@@ -171,7 +171,7 @@ const MOCK_CLAIMS = [
     scheme: "Inpatient · CIC Comprehensive",
     payer: "CIC",
     severity: "high",
-    currency: "KES",
+    currency: "RWF",
     rule: "Waiting period not yet met",
     whatsWrong: "Admission falls inside the scheme's 90-day waiting period for inpatient cover.",
     whyItMatters: "Claims filed before the waiting period ends are excluded, not delayed — this one won't pay.",
@@ -200,7 +200,7 @@ const MOCK_CLAIMS = [
     scheme: "Outpatient · OM/UAP Silver",
     payer: "OM/UAP",
     severity: "medium",
-    currency: "KES",
+    currency: "RWF",
     rule: "Tariff limit exceeded",
     whatsWrong: "Lab panel billed above the contracted tariff cap for this scheme tier.",
     whyItMatters: "Amounts above the tariff cap are typically rejected on that line item, not the whole claim.",
@@ -529,7 +529,7 @@ function generateAssuranceWidgetHtml(claim, options = { showBrand: true, showAct
       (item) => `
       <div class="bill-row">
         <span class="bill-desc">${item.desc}</span>
-        <span class="bill-amount">${claim.currency || "KES"} ${formatNumber(item.amount)}</span>
+        <span class="bill-amount">${claim.currency || "RWF"} ${formatNumber(item.amount)}</span>
       </div>`
     )
     .join("");
@@ -624,7 +624,7 @@ function generateAssuranceWidgetHtml(claim, options = { showBrand: true, showAct
 
       <div class="invoice-draft-row">
         <span>Invoice draft</span>
-        <span>${claim.currency || "KES"} ${formatNumber(claim.invoiceTotal)}</span>
+        <span>${claim.currency || "RWF"} ${formatNumber(claim.invoiceTotal)}</span>
       </div>
 
       <hr class="widget-solid-line">

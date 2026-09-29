@@ -39,7 +39,7 @@ class RestHmisAdapter {
         diagnoses: (v.diagnoses || []).map((d) => (typeof d === "string" ? { code: "ICD-10", display: d } : d)),
         items,
         invoiceTotal: v.totalBill ? Number(v.totalBill) : invoiceTotal,
-        currency: v.currency || "KES",
+        currency: v.currency || "RWF",
         attendingDoctor: v.doctorName || "Attending Physician",
         date: v.admissionDate || v.visitDate || new Date().toISOString(),
       };

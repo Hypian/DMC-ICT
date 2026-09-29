@@ -129,7 +129,7 @@ class FhirHmisAdapter {
       diagnoses,
       items,
       invoiceTotal,
-      currency: "KES",
+      currency: "RWF",
       attendingDoctor: doctorDisplay,
       date: encounter.period?.start || new Date().toISOString(),
     };

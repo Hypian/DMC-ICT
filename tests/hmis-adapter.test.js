@@ -16,7 +16,7 @@ test("FhirHmisAdapter - correctly normalizes FHIR R4 Bundle", async () => {
   assert.equal(visit.payer, "Jubilee");
   assert.equal(visit.scheme, "Outpatient · Corporate scheme B");
   assert.equal(visit.memberId, "JUB-882910-B");
-  assert.equal(visit.currency, "KES");
+  assert.equal(visit.currency, "RWF");
   assert.equal(visit.source, "FHIR_R4");
 
   // Validate items
