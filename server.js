@@ -92,13 +92,28 @@ const server = http.createServer(async (req, res) => {
     const claimId = parts[3];
     try {
       const body = await parseJsonBody(req);
-      const updated = await claimsService.resolveClaim(claimId, body.status || "clean", body.reason);
+      const updated = await claimsService.resolveClaim(
+        claimId,
+        body.status || "clean",
+        body.reason || "",
+        body.staffId || "unknown"
+      );
       if (!updated) {
         return sendJson(res, 404, { error: "Claim not found" });
       }
       return sendJson(res, 200, updated);
     } catch (err) {
       return sendJson(res, 400, { error: "Failed to resolve claim", message: err.message });
+    }
+  }
+
+  if (pathname === "/api/audit-log" && req.method === "GET") {
+    try {
+      const claimId = parsedUrl.searchParams.get("claimId");
+      const logs = claimId ? await claimsService.getAuditLog(claimId) : await claimsService.getAuditLog();
+      return sendJson(res, 200, logs);
+    } catch (err) {
+      return sendJson(res, 500, { error: "Failed to fetch audit log", message: err.message });
     }
   }
 

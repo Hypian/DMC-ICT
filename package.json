@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js",
+    "db:init": "node -e \"const fs=require('fs'); const path=require('path'); const sql=fs.readFileSync(path.join(process.cwd(),'db/schema.sql'),'utf8'); console.log(sql);\""
   },
   "keywords": [
     "dmc",
@@ -18,5 +19,9 @@
     "widget"
   ],
   "author": "DMC ICT Department",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.0"
+  }
 }

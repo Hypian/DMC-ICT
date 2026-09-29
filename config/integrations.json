@@ -1,4 +1,29 @@
 {
+  "database": {
+    "connectionString": "",
+    "host": "localhost",
+    "port": 5432,
+    "database": "dmc_claims_service",
+    "user": "dmc_reader",
+    "password": "",
+    "ssl": false,
+    "schemaPath": "./db/schema.sql"
+  },
+  "mis": {
+    "readOnly": true,
+    "strategy": "scheduled-view-sync",
+    "sources": [
+      { "name": "emr_fhir", "type": "fhir", "enabled": true },
+      { "name": "legacy_rest", "type": "rest", "enabled": true }
+    ]
+  },
+  "thirdParty": {
+    "integrations": [
+      { "name": "SHA", "type": "api", "enabled": false, "todo": "Source from DMC-approved contract and keep patient data on the LAN only." },
+      { "name": "MMI", "type": "portal", "enabled": false, "todo": "Future portal integration; out of scope for v1." },
+      { "name": "RSSB", "type": "portal", "enabled": false, "todo": "Future portal integration; out of scope for v1." }
+    ]
+  },
   "hmis": {
     "fhir": {
       "enabled": true,

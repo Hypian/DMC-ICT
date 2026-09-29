@@ -69,8 +69,12 @@ test("API Server - endpoints operate correctly", async (t) => {
   const resolveRes = await makeRequest(port, `/api/claims/${flagged.id}/resolve`, "POST", {
     status: "clean",
     reason: "Pre-auth obtained from Jubilee portal",
+    staffId: "STAFF-1001",
   });
   assert.equal(resolveRes.status, 200);
   assert.equal(resolveRes.data.status, "clean");
   assert.equal(resolveRes.data.stage, 3);
+  assert.ok(Array.isArray(resolveRes.data.auditLog));
+  assert.ok(resolveRes.data.auditLog.length >= 1);
+  assert.equal(resolveRes.data.auditLog[0].action, "claim_resolved");
 });

@@ -1,16 +1,18 @@
 /**
  * ClaimsSyncService
  * Orchestrates pulling from all registered HMIS systems,
- * running the Pre-Bill Assurance Rules Engine, and maintaining the active claims cache.
+ * running the Pre-Bill Assurance Rules Engine, and maintaining the service-owned claims cache.
  */
 
 const FhirHmisAdapter = require("../integrations/hmis/FhirHmisAdapter");
 const RestHmisAdapter = require("../integrations/hmis/RestHmisAdapter");
 const ClaimsRulesEngine = require("../engine/ClaimsRulesEngine");
+const ClaimsDataService = require("./ClaimsDataService");
 const config = require("../../config/integrations.json");
 
 class ClaimsSyncService {
   constructor() {
+    this.dataService = new ClaimsDataService(config.database || {});
     this.fhirAdapter = new FhirHmisAdapter(config.hmis.fhir);
     this.restAdapter = new RestHmisAdapter(config.hmis.rest);
     this.rulesEngine = new ClaimsRulesEngine(config.rules);
@@ -27,7 +29,15 @@ class ClaimsSyncService {
     const allVisits = [...fhirVisits, ...restVisits];
 
     const auditedClaims = await this.rulesEngine.evaluateBatch(allVisits);
-    this.claimsCache = auditedClaims;
+    const savedClaims = [];
+
+    for (const claim of auditedClaims) {
+      const storedClaim = await this.dataService.upsertClaim(claim);
+      storedClaim.auditLog = await this.dataService.getAuditLog(claim.id);
+      savedClaims.push(storedClaim);
+    }
+
+    this.claimsCache = savedClaims;
     this.lastSync = new Date().toISOString();
 
     return {
@@ -50,7 +60,7 @@ class ClaimsSyncService {
     if (this.claimsCache.length === 0) {
       await this.syncAll();
     }
-    return this.claimsCache;
+    return this.dataService.getClaims();
   }
 
   /**
@@ -61,30 +71,56 @@ class ClaimsSyncService {
     return claims.find((c) => c.id === id || c.visitId.includes(id));
   }
 
+  async getAuditLog(claimId) {
+    return this.dataService.getAuditLog(claimId);
+  }
+
   /**
-   * Resolves a claim issue
+   * Resolves a claim issue and writes the staff override to the audit log.
    */
-  async resolveClaim(id, status = "clean", reason = "") {
+  async resolveClaim(id, status = "clean", reason = "", staffId = "unknown") {
     const claim = await this.getClaimById(id);
     if (!claim) return null;
 
-    claim.status = status;
-    claim.stage = status === "clean" ? 3 : 2;
-    claim.resolvedAt = new Date().toISOString();
-    if (reason) claim.rejectionReason = reason;
+    const resolvedClaim = { ...claim, status, stage: status === "clean" ? 3 : 2, resolvedAt: new Date().toISOString() };
+
+    if (reason) {
+      resolvedClaim.rejectionReason = reason;
+    }
 
     if (status === "clean") {
-      claim.checklist = claim.checklist.map((item) => {
+      resolvedClaim.checklist = (claim.checklist || []).map((item) => {
         if (item.status === "fail" || item.status === "warning") {
           return { ...item, value: "verified & cleared", status: "pass" };
         }
         return item;
       });
-      claim.severity = "low";
-      claim.rule = "Pre-bill audit complete (resolved)";
+      resolvedClaim.severity = "low";
+      resolvedClaim.rule = "Pre-bill audit complete (resolved)";
     }
 
-    return claim;
+    const storedClaim = await this.dataService.upsertClaim(resolvedClaim);
+    const auditEntry = await this.dataService.appendAuditLog({
+      claimId: storedClaim.id,
+      action: "claim_resolved",
+      status,
+      reason,
+      staffId,
+      createdAt: new Date().toISOString(),
+      details: "Claim reviewed and resolved by staff override.",
+    });
+
+    storedClaim.auditLog = await this.dataService.getAuditLog(storedClaim.id);
+    if (!storedClaim.auditLog.some((entry) => entry.id === auditEntry.id)) {
+      storedClaim.auditLog.unshift(auditEntry);
+    }
+
+    const index = this.claimsCache.findIndex((c) => c.id === storedClaim.id);
+    if (index >= 0) {
+      this.claimsCache[index] = storedClaim;
+    }
+
+    return storedClaim;
   }
 }
 
