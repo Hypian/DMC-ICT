@@ -283,6 +283,7 @@ const els = {
   assuranceWidgetRoot: document.getElementById("assurance-widget-root"),
   btnCopyEmbed: document.getElementById("btn-copy-embed"),
   btnOpenStandalone: document.getElementById("btn-open-standalone"),
+  btnOpenHimsWidget: document.getElementById("btn-open-hims-widget"),
   btnSyncAll: document.getElementById("btn-sync-all"),
 };
 
@@ -346,6 +347,12 @@ async function init() {
     els.btnOpenStandalone.addEventListener("click", () => {
       const url = `${window.location.origin}${window.location.pathname}?widget=1&visit=${currentWidgetClaimId}`;
       window.open(url, "_blank", "width=520,height=720,menubar=no,toolbar=no");
+    });
+  }
+
+  if (els.btnOpenHimsWidget) {
+    els.btnOpenHimsWidget.addEventListener("click", () => {
+      window.open("http://127.0.0.1:5501/widget.html", "_blank", "width=540,height=780,menubar=no,toolbar=no");
     });
   }
 }

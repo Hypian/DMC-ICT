@@ -12,6 +12,7 @@ function makeRequest(port, path, method = "GET", body = null) {
       method,
       headers: {
         "Content-Type": "application/json",
+        "Connection": "close",
       },
     };
 
@@ -42,6 +43,9 @@ test("API Server - endpoints operate correctly", async (t) => {
   const port = server.address().port;
 
   t.after(() => {
+    if (typeof server.closeAllConnections === "function") {
+      server.closeAllConnections();
+    }
     server.close();
   });
 

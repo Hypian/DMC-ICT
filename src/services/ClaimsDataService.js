@@ -44,6 +44,9 @@ class ClaimsDataService {
       await this.ensureSchema();
       this.dbReady = true;
     } catch (error) {
+      if (this.dbClient) {
+        try { await this.dbClient.end(); } catch (_) {}
+      }
       this.dbClient = null;
       this.dbReady = false;
     }
