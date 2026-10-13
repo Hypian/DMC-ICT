@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DMC Patient Tracker</title>
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+  <link rel="stylesheet" href="widget.css">
+</head>
+<body>
+  <main class="tracker-card" aria-label="DMC patient and ancillary-charge tracker">
+    <header class="tracker-header">
+      <img class="tracker-logo" src="../assets/dmc-widget-logo.jpg" alt="Dream Medical Center Hospital">
+      <div class="header-actions">
+        <button class="connect-button" id="connect-hims" type="button"><i class="bx bx-link-alt"></i> Connect HIMS test</button>
+        <button class="icon-button" id="refresh-widget" type="button" title="Refresh patient data" aria-label="Refresh patient data"><i class="bx bx-refresh"></i></button>
+      </div>
+    </header>
+
+    <section class="tracker-title">
+      <div class="title-icon"><i class="bx bx-pulse"></i></div>
+      <div>
+        <h1>Patient &amp; Claims Tracker</h1>
+        <p>MIS-neutral payment and ancillary-charge tracking</p>
+      </div>
+    </section>
+
+    <div id="connection-status" class="connection-status demo"><i class="bx bx-circle"></i> Demo data</div>
+
+    <section class="tracker-body">
+      <div class="panel">
+        <div class="panel-label"><span>Find patient</span><span class="live-label">Live data</span></div>
+        <label class="search-field" for="patient-search"><i class="bx bx-search"></i><span class="sr-only">Search patient</span><input id="patient-search" type="search" placeholder="Search name, ID, or phone"></label>
+        <select id="patient-select" aria-label="Select patient"></select>
+      </div>
+
+      <section id="patient-summary" class="patient-summary" aria-live="polite"></section>
+      <section id="financial-status" class="panel" aria-live="polite"></section>
+      <section id="ancillary-charges" class="panel" aria-live="polite"></section>
+    </section>
+  </main>
+  <script src="widget.js"></script>
+</body>
+</html>

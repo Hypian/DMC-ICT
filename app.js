@@ -283,7 +283,7 @@ const els = {
   assuranceWidgetRoot: document.getElementById("assurance-widget-root"),
   btnCopyEmbed: document.getElementById("btn-copy-embed"),
   btnOpenStandalone: document.getElementById("btn-open-standalone"),
-  btnOpenHimsWidget: document.getElementById("btn-open-hims-widget"),
+  btnOpenPatientTracker: document.getElementById("btn-open-patient-tracker"),
   btnSyncAll: document.getElementById("btn-sync-all"),
 };
 
@@ -350,9 +350,9 @@ async function init() {
     });
   }
 
-  if (els.btnOpenHimsWidget) {
-    els.btnOpenHimsWidget.addEventListener("click", () => {
-      window.open("http://127.0.0.1:5501/widget.html", "_blank", "width=540,height=780,menubar=no,toolbar=no");
+  if (els.btnOpenPatientTracker) {
+    els.btnOpenPatientTracker.addEventListener("click", () => {
+      window.open(`${window.location.origin}/widget/index.html`, "_blank", "width=540,height=780,menubar=no,toolbar=no");
     });
   }
 }
@@ -527,6 +527,7 @@ function generateAssuranceWidgetHtml(claim, options = { showBrand: true, showAct
   const isRejected = claim.status === "rejected";
   const pillClass = isClean ? "clean" : isRejected ? "rejected" : "flagged";
   const pillText = isClean ? "CLEAN CLAIM" : isRejected ? "REJECTED" : "ACTION NEEDED";
+  const pillIcon = isClean ? "bx-check-shield" : isRejected ? "bx-block" : "bx-error-alt";
 
   const billLinesHtml = (claim.items || [
     { desc: "General Consultation", amount: 3500 },
@@ -568,11 +569,11 @@ function generateAssuranceWidgetHtml(claim, options = { showBrand: true, showAct
   const isAlert = !isClean;
 
   const steps = [
-    { num: 1, label: "LIVE VISIT" },
-    { num: 2, label: "CHECKED" },
-    { num: 3, label: "CLEAN" },
-    { num: 4, label: "SENT" },
-    { num: 5, label: "SETTLED" },
+    { num: 1, label: "LIVE VISIT", icon: "bx-calendar-check" },
+    { num: 2, label: "CHECKED", icon: "bx-search-alt-2" },
+    { num: 3, label: "CLEAN", icon: "bx-check-shield" },
+    { num: 4, label: "SENT", icon: "bx-send" },
+    { num: 5, label: "SETTLED", icon: "bx-wallet" },
   ];
 
   const stepperNodesHtml = steps
@@ -583,7 +584,7 @@ function generateAssuranceWidgetHtml(claim, options = { showBrand: true, showAct
       } else if (step.num === currentStage) {
         nodeClass = isAlert ? "alert" : "active";
       }
-      return `<div class="stepper-node ${nodeClass}"></div>`;
+      return `<div class="stepper-node ${nodeClass}" aria-hidden="true"><i class='bx ${step.icon}'></i></div>`;
     })
     .join("");
 
@@ -605,7 +606,7 @@ function generateAssuranceWidgetHtml(claim, options = { showBrand: true, showAct
         options.showBrand
           ? `
         <div class="widget-brand-badge">
-          <img src="dmc-logo.png" alt="DMC Hospital">
+          <img src="assets/dmc-logo.png" alt="DMC Hospital">
           <span>DMC Claims Assurance &middot; EMR Widget</span>
         </div>`
           : ""
@@ -617,32 +618,45 @@ function generateAssuranceWidgetHtml(claim, options = { showBrand: true, showAct
           <p class="widget-visit-scheme">${claim.scheme || "Outpatient · General Scheme"}</p>
         </div>
         <div class="widget-status-pill ${pillClass}">
+          <i class='bx ${pillIcon}' aria-hidden="true"></i>
           ${pillText}
         </div>
       </div>
 
       <hr class="widget-dashed-line">
 
-      <div class="bill-items-list">
-        ${billLinesHtml}
-      </div>
+      <section class="widget-section" aria-labelledby="bill-items-${claim.id}">
+        <h3 class="widget-section-title" id="bill-items-${claim.id}">
+          <i class='bx bx-receipt' aria-hidden="true"></i>
+          Billed items
+        </h3>
+        <div class="bill-items-list">
+          ${billLinesHtml}
+        </div>
+      </section>
 
       <hr class="widget-dashed-line">
 
       <div class="invoice-draft-row">
-        <span>Invoice draft</span>
+        <span class="invoice-draft-label"><i class='bx bx-file' aria-hidden="true"></i>Invoice draft</span>
         <span>${claim.currency || "RWF"} ${formatNumber(claim.invoiceTotal)}</span>
       </div>
 
       <hr class="widget-solid-line">
 
-      <div class="assurance-checklist">
-        ${checklistHtml}
-      </div>
+      <section class="widget-section" aria-labelledby="checks-${claim.id}">
+        <h3 class="widget-section-title" id="checks-${claim.id}">
+          <i class='bx bx-clipboard' aria-hidden="true"></i>
+          Payer checks
+        </h3>
+        <div class="assurance-checklist">
+          ${checklistHtml}
+        </div>
+      </section>
 
       <hr class="widget-solid-line">
 
-      <div class="widget-stepper">
+      <div class="widget-stepper" aria-label="Claim lifecycle: ${steps[currentStage - 1].label}">
         <div class="stepper-track-wrap">
           <div class="stepper-bg-bar"></div>
           <div class="stepper-progress-bar" style="width: calc(${progressPercent}% - 6px); ${isAlert ? "background: var(--red);" : ""}"></div>
